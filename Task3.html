@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>US Phone Number Validator</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        padding: 20px;
+        max-width: 600px;
+        margin: auto;
+      }
+      #results-div {
+        margin-top: 20px;
+        font-weight: bold;
+      }
+      button {
+        margin: 5px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+      input {
+        width: calc(100% - 22px);
+        padding: 10px;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>US Phone Number Validator</h1>
+    <input type="text" id="user-input" placeholder="Enter phone number" />
+    <button id="check-btn">Check</button>
+    <button id="clear-btn">Clear</button>
+    <div id="results-div"></div>
+
+    <script>
+      function validatePhoneNumber(phoneNumber) {
+        // Regular expression to validate US phone numbers
+        const regex = /^(1\s?)?(\(\d{3}\)|\d{3})([\s.-]?\d{3})([\s.-]?\d{4})$/;
+        return regex.test(phoneNumber);
+      }
+
+      document
+        .getElementById("check-btn")
+        .addEventListener("click", function () {
+          const userInput = document.getElementById("user-input").value.trim();
+          const resultsDiv = document.getElementById("results-div");
+
+          if (!userInput) {
+            alert("Please provide a phone number");
+            return;
+          }
+
+          if (validatePhoneNumber(userInput)) {
+            resultsDiv.textContent = `Valid US number: ${userInput}`;
+          } else {
+            resultsDiv.textContent = `Invalid US number: ${userInput}`;
+          }
+        });
+
+      document
+        .getElementById("clear-btn")
+        .addEventListener("click", function () {
+          document.getElementById("user-input").value = "";
+          document.getElementById("results-div").textContent = "";
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        #purchase-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        #change-due {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="number" id="price" step="0.01">
+        </div>
+        <div class="form-group">
+            <label for="cash">Cash:</label>
+            <input type="number" id="cash" step="0.01">
+        </div>
+        <button id="purchase-btn">Purchase</button>
+        <div id="change-due"></div>
+    </div>
+
+    <script>
+        let cid = [
+            ["PENNY", 1.01],
+            ["NICKEL", 2.05],
+            ["DIME", 3.1],
+            ["QUARTER", 4.25],
+            ["ONE", 90],
+            ["FIVE", 55],
+            ["TEN", 20],
+            ["TWENTY", 60],
+            ["ONE HUNDRED", 100]
+        ];
+
+        document.getElementById('purchase-btn').addEventListener('click', function () {
+            let price = parseFloat(document.getElementById('price').value);
+            let cash = parseFloat(document.getElementById('cash').value);
+            let changeDueDiv = document.getElementById('change-due');
+
+            let changeDue = cash - price;
+
+            if (cash < price) {
+                alert("Customer does not have enough money to purchase the item");
+                return;
+            }
+
+            if (cash === price) {
+                changeDueDiv.innerHTML = "No change due - customer paid with exact cash";
+                return;
+            }
+
+            let cashInDrawer = cid.reduce((total, currency) => total + currency[1], 0);
+
+            if (cashInDrawer < changeDue) {
+                changeDueDiv.innerHTML = "Status: INSUFFICIENT_FUNDS";
+                return;
+            }
+
+            let currencyUnits = [
+                ["ONE HUNDRED", 100],
+                ["TWENTY", 20],
+                ["TEN", 10],
+                ["FIVE", 5],
+                ["ONE", 1],
+                ["QUARTER", 0.25],
+                ["DIME", 0.10],
+                ["NICKEL", 0.05],
+                ["PENNY", 0.01]
+            ];
+
+            let change = [];
+            for (let i = 0; i < currencyUnits.length; i++) {
+                let currencyName = currencyUnits[i][0];
+                let currencyValue = currencyUnits[i][1];
+                let amountAvailable = cid[i][1];
+
+                let currencyAmount = 0;
+                while (changeDue >= currencyValue && amountAvailable > 0) {
+                    changeDue = parseFloat((changeDue - currencyValue).toFixed(2));
+                    amountAvailable -= currencyValue;
+                    currencyAmount += currencyValue;
+                }
+
+                if (currencyAmount > 0) {
+                    change.push([currencyName, currencyAmount]);
+                }
+            }
+
+            if (changeDue > 0) {
+                changeDueDiv.innerHTML = "Status: INSUFFICIENT_FUNDS";
+                return;
+            }
+
+            let totalChangeGiven = change.reduce((total, item) => total + item[1], 0);
+            if (totalChangeGiven === cashInDrawer) {
+                changeDueDiv.innerHTML = "Status: CLOSED " + change.map(item => `${item[0]}: $${item[1].toFixed(2)}`).join(' ');
+            } else {
+                changeDueDiv.innerHTML = "Status: OPEN " + change.map(item => `${item[0]}: $${item[1].toFixed(2)}`).join(' ');
+            }
+        });
+    </script>
+</body>
+</html>

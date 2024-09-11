@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roman Numeral Converter</title>
+  <style>
+    /* Styling for the body */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      text-align: center;
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    #output {
+      margin-top: 20px;
+      font-size: 18px;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Input for the number -->
+  <input type="number" id="number" placeholder="Enter a number">
+
+  <!-- Button to convert the number to Roman numerals -->
+  <button id="convert-btn">Convert</button>
+
+  <!-- Output for the Roman numeral conversion -->
+  <p id="output"></p>
+
+  <script>
+    // Function to convert Arabic number to Roman numeral
+    function convertToRoman(num) {
+      if (num < 1) return "Please enter a number greater than or equal to 1";
+      if (num >= 4000) return "Please enter a number less than or equal to 3999";
+      
+      const romanNumerals = [
+        { value: 1000, symbol: 'M' },
+        { value: 900, symbol: 'CM' },
+        { value: 500, symbol: 'D' },
+        { value: 400, symbol: 'CD' },
+        { value: 100, symbol: 'C' },
+        { value: 90, symbol: 'XC' },
+        { value: 50, symbol: 'L' },
+        { value: 40, symbol: 'XL' },
+        { value: 10, symbol: 'X' },
+        { value: 9, symbol: 'IX' },
+        { value: 5, symbol: 'V' },
+        { value: 4, symbol: 'IV' },
+        { value: 1, symbol: 'I' }
+      ];
+
+      let roman = '';
+      romanNumerals.forEach(numeral => {
+        while (num >= numeral.value) {
+          roman += numeral.symbol;
+          num -= numeral.value;
+        }
+      });
+      return roman;
+    }
+
+    // Event listener for the button
+    document.getElementById('convert-btn').addEventListener('click', function() {
+      const input = document.getElementById('number').value.trim();
+      const outputDiv = document.getElementById('output');
+      const num = parseInt(input);
+
+      // Check if input is empty or not a valid number
+      if (!input || isNaN(num)) {
+        outputDiv.textContent = "Please enter a valid number";
+        return;
+      }
+
+      // Check if the number is valid
+      outputDiv.textContent = convertToRoman(num);
+    });
+  </script>
+
+</body>
+</html>
